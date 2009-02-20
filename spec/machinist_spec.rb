@@ -255,4 +255,16 @@ describe Machinist do
     
   end # ActiveRecord support
   
+  describe "setting a limit to object creation" do
+    it "should let you limit how many objects to create" do
+      Post.blueprint {}
+      Person.blueprint {}
+      Comment.blueprint {}
+      Comment.set_creation_limit { Comment.count >= 5 }
+      Comment.delete_all
+      Comment.count.should == 0
+      6.times { Comment.make }
+      Comment.count.should == 5
+    end
+  end
 end

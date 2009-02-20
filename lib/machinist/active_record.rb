@@ -51,12 +51,28 @@ module Machinist
       end
     
       module ClassMethods
-        def blueprint(name = :master, &blueprint)
+        def blueprint(name = :master, options = {}, &blueprint)
           @blueprints ||= {}
+          @blueprint_object_limit = options[:limit]
           @blueprints[name] = blueprint if block_given?
           @blueprints[name]
         end
   
+        def set_creation_limit(&clause)
+          @creation_limit = clause
+        end
+        
+        def get_creation_limit
+          @creation_limit
+        end
+
+        def set_found_object_index(i)
+          @found_object_index = i
+        end
+
+        def get_found_object_index
+          @found_object_index
+        end
         def make(*args, &block)
           lathe = Lathe.run(self.new, *args)
           unless Machinist::ActiveRecord.nerfed?

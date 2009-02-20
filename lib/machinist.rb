@@ -14,6 +14,19 @@ module Machinist
       named_blueprint = object.class.blueprint(args.shift) if args.first.is_a?(Symbol)
       attributes = args.pop || {}
       raise "No blueprint for class #{object.class}" if blueprint.nil?
+      if limit_proc = object.class.get_creation_limit
+        if limit_proc.call
+          all_results = object.class.all
+          i = object.class.get_found_object_index || 0
+          if i == all_results.size
+            new_i = 0
+          else
+            new_i = i+1
+          end
+          object.class.set_found_object_index(new_i)
+          return self.new(all_results[i])
+        end
+      end
       returning self.new(object, attributes) do |lathe|
         lathe.instance_eval(&named_blueprint) if named_blueprint
         lathe.instance_eval(&blueprint)

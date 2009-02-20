@@ -1,7 +1,9 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
 require 'test/unit'
 require 'spec'
+require 'rubygems'
 require 'active_record'
+require 'machinist/active_record'
 require 'sham'
 
 config = YAML::load(IO.read(File.dirname(__FILE__) + "/db/database.yml"))
